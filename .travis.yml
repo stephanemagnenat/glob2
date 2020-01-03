@@ -1,0 +1,59 @@
+language: cpp
+dist: xenial # Must use Xenial here
+compiler: gcc
+
+addons: 
+  apt: 
+    packages: 
+      - mercurial
+      - scons 
+      - libsdl1.2-dev 
+      - libsdl-net1.2-dev 
+      - libsdl-image1.2-dev
+      - libsdl-ttf2.0-dev 
+      - zlibc 
+      - libspeex-dev 
+      - libogg-dev 
+      - libvorbis-dev 
+      - qt5-qmake 
+      - qt5-default
+      - cppcheck
+      - valgrind
+      - sloccount
+
+install: 
+  - sudo apt update -qq
+  # GCC 9
+  - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+  - sudo apt-get update -q
+  - sudo apt-get install g++-9 -y
+  - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-9 90
+  # Boost
+  - sudo apt install -qq libboost-all-dev
+  # cppunit
+  - my_github=${PWD##*/}  
+  - cd ..
+  - git clone git://anongit.freedesktop.org/git/libreoffice/cppunit/
+  - cd cppunit
+  - ./autogen.sh
+  - ./configure
+  - make
+  - make check # optional
+  - sudo make install
+  - cd ..
+  - cd $my_github
+
+script: 
+  # Build source using scons. Creates 'config.h'
+  - scons
+  # Run tests
+  - qmake src/globulation2_test.pro
+  - make --silent
+  - ./globulation2_test
+  # Build source with qmake
+  - qmake src/globulation2.pro
+  - make --silent
+  # Check if build was successfull
+  - if [ ! -f src/glob2 ]; then echo "scons build failed" ; exit 1 ; fi
+  - if [ ! -f globulation2 ]; then echo "qmake build failed" ; exit 1 ; fi
+

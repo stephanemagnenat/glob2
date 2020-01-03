@@ -9,3 +9,6 @@ src/glob2
 *~
 .directory
 scons/*.pyc
+*.pro.user
+build-globulation2-Desktop-Debug/
+build-*

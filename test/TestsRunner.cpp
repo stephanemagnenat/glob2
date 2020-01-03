@@ -29,6 +29,10 @@
 #include <cppunit/ui/text/TestRunner.h>
 #include <cppunit/XmlOutputter.h>
 
+//Globulation2 has one global
+#include "GlobalContainer.h"
+GlobalContainer *globalContainer = new GlobalContainer;
+
 int main(int argc, char* argv[])
 {
 	// Get the top level suite from the registry
